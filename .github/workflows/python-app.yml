@@ -14,9 +14,11 @@ permissions:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    strategy: 
+      matrix: 
+          os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    
     defaults: 
       run: 
         working-directory: ./example-app
@@ -154,3 +156,4 @@ jobs:
 
     - name: Run unit tests
       run: poetry run task test
+
