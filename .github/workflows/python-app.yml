@@ -129,7 +129,8 @@ jobs:
     
   unittests:
     needs: [lint, formatter, security]
-
+    runs-on: ubuntu-latest
+    
     defaults: 
       run: 
         working-directory: ./example-app
