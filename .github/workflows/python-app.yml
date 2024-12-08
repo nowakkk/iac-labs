@@ -98,15 +98,58 @@ jobs:
 
     - name: Run formatter
       run: poetry run task formatter
+
+  security:
+    needs: build
+    runs-on: ubuntu-latest
+
+    defaults: 
+      run: 
+        working-directory: ./example-app
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+
+    - name: Install Poetry Action
+      uses: snok/install-poetry@v1.3.4
+        
+    - name: Restore cached deps
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: /home/runner/work/iac-labs/iac-labs/example-app/.venv
+        key: ${{ runner.os }}-venv
+
+    - name: Run security
+      run: poetry run task security
     
-  #formatter:
-   # name: formatter job
-    #needs: build
-    
-  #security:
-   # name: security job
-    #needs: build
-    
-  #unittests:
-   # name: unittests job
-    #needs: [lint, formatter, security]
+  unittests:
+    needs: [lint, formatter, security]
+
+    defaults: 
+      run: 
+        working-directory: ./example-app
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+
+    - name: Install Poetry Action
+      uses: snok/install-poetry@v1.3.4
+        
+    - name: Restore cached deps
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: /home/runner/work/iac-labs/iac-labs/example-app/.venv
+        key: ${{ runner.os }}-venv
+
+    - name: Run unit tests
+      run: poetry run task test
